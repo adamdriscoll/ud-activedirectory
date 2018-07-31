@@ -18,8 +18,6 @@ function Start-UDActiveDirectoryDashboard {
         & $_.FullName
     }
 
-    $Pages
-    
     $Dashboard = New-UDDashboard -Title "Active Directory" -Pages $Pages 
     
     Start-UDDashboard -Dashboard $Dashboard -Endpoint $Endpoints -Port 10001
