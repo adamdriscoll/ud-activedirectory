@@ -18,9 +18,9 @@ Active Directory Dashboard built on Universal Dashboard.
 
 ![](./images/search.png)
 
-## View Info and Reset Passwords
+## Object Overview
 
-![](./images/reset-password.png)
+![](./images/object-overview.png)
 
 ## View All Attributes
 
@@ -29,5 +29,9 @@ Active Directory Dashboard built on Universal Dashboard.
 ## Create Users
 
 ![](./images/create-user.png)
+
+## Reset Passwords
+
+![](./images/reset-password.png)
 
 _Icon from [Icons8](http://icons8.com)_

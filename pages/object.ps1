@@ -45,26 +45,35 @@ New-UDPage -Url "/object/:identity" -Endpoint {
             } 
         }
         New-UDColumn -Size 4 -Content {
-            if ($Object.ObjectClass -eq 'user') {
-                New-UDInput -Title "Reset Password" -SubmitText "Reset" -Content {
-                    New-UDInputField -Name "Password" -Placeholder "Password" -Type "password"
-                } -Endpoint {
-                    param($Password)
-
-                    try {
-                        Set-ADAccountPassword -Reset -NewPassword (ConvertTo-SecureString -AsPlainText -String $Password -Force) -Identity $identity @Cache:ConnectionInfo
-                        New-UDInputAction -Toast "Password Reset" -Duration 3000
-                    }
-                    catch {
-                        New-UDInputAction -Toast "$_" -Duration 3000
-                    }
-                }
-            }
-
             #TODO: Actions!
             $Null = New-UDRow -Columns {
                 New-UDButton -Icon trash -Text "Delete" -OnClick {
                     Remove-ADObject -Identity $identity @Cache:ConnectionInfo
+                }
+            }
+        }
+    }
+
+
+    if ($Object.ObjectClass -eq 'user') {
+        New-UDRow -Columns {
+            New-UDColumn -SmallSize 12 -Content {
+                New-UDCollapsible -Items {
+                    New-UDCollapsibleItem -Title "Reset Password" -Icon star_half_o -Content {
+                        New-UDInput -Title "Reset Password" -SubmitText "Reset" -Content {
+                            New-UDInputField -Name "Password" -Placeholder "Password" -Type "password"
+                        } -Endpoint {
+                            param($Password)
+        
+                            try {
+                                Set-ADAccountPassword -Reset -NewPassword (ConvertTo-SecureString -AsPlainText -String $Password -Force) -Identity $identity @Cache:ConnectionInfo
+                                New-UDInputAction -Toast "Password Reset" -Duration 3000
+                            }
+                            catch {
+                                New-UDInputAction -Toast "$_" -Duration 3000
+                            }
+                        }
+                    }
                 }
             }
         }
