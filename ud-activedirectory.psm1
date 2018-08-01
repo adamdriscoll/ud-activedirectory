@@ -1,13 +1,19 @@
 function Start-UDActiveDirectoryDashboard {
-    Import-Module UniversalDashboard
+    param(
+        [Parameter()]
+        [string]$Server,
+        [Parameter()]
+        [PSCredential]$Credential
+    )
 
-    . (Join-Path $PSScriptRoot 'utils.ps1')
+    $Utilities = (Join-Path $PSScriptRoot 'utils.ps1')
+    . $Utilities
 
     $Cache:Loading = $true
     $Cache:ChartColorPalette = @('#5899DA', '#E8743B', '#19A979', '#ED4A7B', '#945ECF', '#13A4B4', '#525DF4', '#BF399E', '#6C8893', '#EE6868', '#2F6497')
     $Cache:ConnectionInfo = @{
-        Server = "ironmandc1"
-        Credential = Get-Credential ironman\administrator
+        Server = $Server
+        Credential = $Credential
     }
 
     $Pages = Get-ChildItem (Join-Path $PSScriptRoot 'pages') -Recurse -File | ForEach-Object {
@@ -18,8 +24,10 @@ function Start-UDActiveDirectoryDashboard {
         & $_.FullName
     }
 
-    $Dashboard = New-UDDashboard -Title "Active Directory" -Pages $Pages 
+    $Dashboard = New-UDDashboard -Title "Active Directory" -Pages $Pages -EndpointInitializationScript {
+        . $Utilities
+    }
     
-    Start-UDDashboard -Dashboard $Dashboard -Endpoint $Endpoints -Port 10001
+    Start-UDDashboard -Dashboard $Dashboard -Endpoint $Endpoints -Port 10001 
 }
 

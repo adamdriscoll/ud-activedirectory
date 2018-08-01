@@ -5,16 +5,19 @@ New-UDPage -Url "/user/create" -Icon Plus -Endpoint {
                 New-UDInputField -Name "FirstName" -Placeholder "First Name" -Type "textbox"
                 New-UDInputField -Name "LastName" -Placeholder "Last Name" -Type "textbox"
                 New-UDInputField -Name "UserName" -Placeholder "Account Name" -Type "textbox"
+                New-UDInputField -Name "Password" -Placeholder "Password" -Type "password"
             } -Endpoint {
                 param(
                     $FirstName,
                     $LastName,
-                    $UserName
+                    $UserName,
+                    $Password
                 )
         
                 try 
                 {
-                    New-ADUser -Name $UserName -GivenName $FirstName -Surname $LastName @Cache:ConnectionInfo
+                    New-ADUser -Name $UserName -GivenName $FirstName -Surname $LastName @Cache:ConnectionInfo 
+                    Set-ADAccountPassword -Reset -NewPassword $Password -Identity $UserName @Cache:ConnectionInfo
                     New-UDInputAction -RedirectUrl "/object/$UserName"
                 }
                 catch 
