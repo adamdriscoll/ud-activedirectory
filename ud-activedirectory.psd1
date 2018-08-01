@@ -12,7 +12,7 @@
     RootModule = '.\ud-activedirectory.psm1'
     
     # Version number of this module.
-    ModuleVersion = '1.0'
+    ModuleVersion = '1.1'
     
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -98,13 +98,13 @@
             Tags = @('UniversalDashboard', 'ud-dashboard', 'activedirectory')
     
             # A URL to the license for this module.
-            LicenseUri = 'https://github.com/ironmansoftware/ud-activedirectory/blob/master/LICENSE'
+            LicenseUri = 'https://github.com/adamdriscoll/ud-activedirectory/blob/master/LICENSE'
     
             # A URL to the main website for this project.
-            ProjectUri = 'https://github.com/ironmansoftware/ud-activedirectory'
+            ProjectUri = 'https://github.com/adamdriscoll/ud-activedirectory'
     
             # A URL to an icon representing this module.
-            IconUri = 'https://github.com/ironmansoftware/ud-activedirectory/raw/master/images/icon.png'
+            IconUri = 'https://github.com/adamdriscoll/ud-activedirectory/raw/master/images/icon.png'
     
             # ReleaseNotes of this module
             # ReleaseNotes = ''
