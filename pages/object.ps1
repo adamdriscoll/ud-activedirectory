@@ -11,6 +11,31 @@ New-UDPage -Url "/object/:identity" -Endpoint {
                 New-UDHeading -Size 5 -Text ("Enabled: " + $Object.Enabled)
             }
         }
+
+        New-UDColumn -Size 1 -Content {
+            New-UDButton -Icon check -Text "Enable" -OnClick {
+                Enable-ADAccount -Identity $identity @Cache:ConnectionInfo
+            }
+        }
+        New-UDColumn -Size 1 -Content {
+            New-UDButton -Icon star -Text "Reset Password" -OnClick {
+                Show-UDModal -Header { "Reset Password" } -Content {
+                    New-UDTextbox -Id "txtResetPassword" -Label "New Password" -Placeholder "New Password" -Type "password"
+                } -Footer {
+                    New-UDButton -Id "btnResetPassword" -Text "Reset" -OnClick {
+                        $Element = Get-UDElement -Id "txtResetPassword" 
+                        $Password = $Element.Attributes["value"]
+
+                        Set-ADAccountPassword -Reset -NewPassword (ConvertTo-SecureString -AsPlainText -String $Password) -Identity $identity @Cache:ConnectionInfo
+                    }
+                }
+            }
+        }
+        New-UDColumn -Size 1 -Content {
+            New-UDButton -Icon trash -Text "Delete" -OnClick {
+                Remove-ADObject -Identity $identity @Cache:ConnectionInfo
+            }
+        }
     }
 
     New-UDRow -Columns {
