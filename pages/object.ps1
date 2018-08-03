@@ -1,18 +1,18 @@
 New-UDPage -Url "/object/:identity" -Endpoint {
     param($identity) 
 
-    $Object = Get-ADObject -Filter { Name -eq $Identity } @Cache:ConnectionInfo -Properties ObjectClass
+    $Object = Get-ADObject -Filter { Name -eq $Identity } @Cache:ConnectionInfo -Properties ObjectClass -IncludeDeletedObjects
     if ($Object.ObjectClass -eq "user") {
-        $Object = Get-ADUser -Filter { Name -eq $Identity } @Cache:ConnectionInfo -Properties *
+        $Object = Get-ADUser -Filter { Name -eq $Identity } @Cache:ConnectionInfo -Properties * 
     }
     elseif ($Object.ObjectClass -eq "computer") {
         $Object = Get-ADComputer -Filter { Name -eq $Identity } @Cache:ConnectionInfo -Properties *
     }
     elseif ($Object.ObjectClass -eq "group") {
-        $Object = Get-ADGroup -Filter { Name -eq $Identity } @Cache:ConnectionInfo -Properties *
+        $Object = Get-ADGroup -Filter { Name -eq $Identity } @Cache:ConnectionInfo -Properties * 
     }
     else {
-        $Object = Get-ADObject -Filter { Name -eq $Identity } @Cache:ConnectionInfo -Properties *
+        $Object = Get-ADObject -Filter { Name -eq $Identity } @Cache:ConnectionInfo -Properties * -IncludeDeletedObjects
     }
 
     New-UDRow -Columns {
@@ -44,16 +44,34 @@ New-UDPage -Url "/object/:identity" -Endpoint {
                 }
             } 
         }
-        New-UDColumn -Size 4 -Content {
-            #TODO: Actions!
-            $Null = New-UDRow -Columns {
+
+        if (-not $Object.Deleted) {
+            New-UDColumn -Size 4 -Content {
+                New-UDElement -Tag "div" -Attributes @{ style = @{ height = "10px"}}
                 New-UDButton -Icon trash -Text "Delete" -OnClick {
-                    Remove-ADObject -Identity $identity @Cache:ConnectionInfo
+                    Show-UDModal -Header { New-UDHeading -Size 5 -Text "Are you sure you want to delete this object?" } -Content {
+
+                        New-UDHeading -Size 5 -Text "Clicking ok will run: Remove-ADObject -Identity $identity -Confirm:`$false"
+
+                        New-UDRow -Columns {
+                            New-UDColumn -Size 2 -Content {
+                                New-UDButton -Text "Ok" -OnClick {
+                                    Remove-ADObject -Identity $identity @Cache:ConnectionInfo -Confirm:$false
+                                    Hide-UDModal
+                                } -Icon warning
+                            }
+                            New-UDColumn -Size 2 -Content {
+                                New-UDButton -Text "Cancel" -OnClick {
+                                    Hide-UDModal
+                                }
+                            }
+                        }
+                    } 
                 }
+    
             }
         }
     }
-
 
     if ($Object.ObjectClass -eq 'user') {
         New-UDRow -Columns {
@@ -73,6 +91,28 @@ New-UDPage -Url "/object/:identity" -Endpoint {
                                 New-UDInputAction -Toast "$_" -Duration 3000
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    if ($Object.ObjectClass -eq 'group') {
+        New-UDRow -Columns {
+            New-UDColumn -SmallSize 12 -Content {
+                New-UDCollapsible -Items {
+                    New-UDCollapsibleItem -Title "Members" -Icon users -Content {
+                        New-UDTable -Id "members" -Headers @("Name", "Remove") -Endpoint {
+                            Get-ADGroupMember -Identity $identity @Cache:ConnectionInfo | ForEach-Object {
+                                $member = $_
+                                [PSCustomObject]@{
+                                    Name = $_.name
+                                    Remove = New-UDButton -Text "Remove" -OnClick {
+                                        Remove-ADGroupMember -Identity $identity @Cache:ConnectionInfo -Members $member -Confirm:$false 
+                                    }
+                                }
+                            } | Out-UDTableData -Property @("Name", "Remove")
+                        } -AutoRefresh -RefreshInterval 5
                     }
                 }
             }

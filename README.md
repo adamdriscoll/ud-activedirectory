@@ -34,4 +34,8 @@ Active Directory Dashboard built on Universal Dashboard.
 
 ![](./images/reset-password.png)
 
+## Manage Group Membership
+
+![](./images/group-membership.png)
+
 _Icon from [Icons8](http://icons8.com)_

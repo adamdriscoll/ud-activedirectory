@@ -19,7 +19,7 @@ New-UDPage -Name "Search" -Icon search -Content {
         
                         Set-UDElement -Id "results" -Content {
                             New-UDGrid -Title "Search Results for: $Value" -Headers @("Name", "More Info") -Properties @("Name", "MoreInfo") -Endpoint {
-                                $Objects = Get-ADObject -Filter { Name -like $Value } -ResultSetSize 20 @Cache:ConnectionInfo
+                                $Objects = Get-ADObject -Filter "Name -like '$Value' -or samAccountName -like '$Value'" -ResultSetSize 20 @Cache:ConnectionInfo -IncludeDeletedObjects
                                 $Objects | ForEach-Object {
                                     [PSCustomObject]@{
                                         Name = $_.Name
