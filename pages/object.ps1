@@ -25,21 +25,6 @@ New-UDPage -Url "/object/:identity" -Endpoint {
                     New-UDColumn -Size 8 -Content {
                         New-UDHeading -Size 5 -Text ($Object.GivenName + " " + $Object.SurName)
                         New-UDHeading -Size 5 -Text $Object.SamAccountName
-
-                        New-UDCheckbox -Label "Enabled" -Checked:$Object.Enabled -Disabled -OnChange {
-                            #TODO: Actions
-                            try {
-                                if ($Object.Enabled) {
-                                    Disable-ADAccount -Identity $identity @Cache:ConnectionInfo
-                                }
-                                else {
-                                    Enable-ADAccount -Identity $identity @Cache:ConnectionInfo
-                                }
-                            }
-                            catch {
-                                Send-UDToast -Message "$_" -Duration 2000
-                            }
-                        }
                     }
                 }
             } 
@@ -58,6 +43,7 @@ New-UDPage -Url "/object/:identity" -Endpoint {
                                 New-UDButton -Text "Ok" -OnClick {
                                     Remove-ADObject -Identity $identity @Cache:ConnectionInfo -Confirm:$false
                                     Hide-UDModal
+                                    Invoke-UDRedirect -Url "/home"
                                 } -Icon warning
                             }
                             New-UDColumn -Size 2 -Content {
@@ -68,9 +54,37 @@ New-UDPage -Url "/object/:identity" -Endpoint {
                         }
                     } 
                 }
-    
+
+                if ($Object.ObjectClass -eq "user" -or $Object.ObjectClass -eq "computer") {
+                    $EnabledText = "Enable"
+                    $btnIcon = 'check'
+                    if ($Object.Enabled) {
+                        $EnabledText = "Disable"
+                        $btnIcon = 'xing'
+                    }
+
+                    New-UDElement -Tag "div" -Attributes @{ style = @{ height = "10px"}} -Content {}
+                    New-UDButton -Id "btnEnabled" -Icon $btnIcon -Text $EnabledText  -OnClick {
+                        if ($Object.Enabled) {
+                            Disable-ADAccount -Identity $identity @Cache:ConnectionInfo
+                            Set-UDElement -Id "btnEnabled" -Content {
+                                New-UDIcon -Icon 'check'
+                                "Enable"
+                            }
+                        }
+                        else {
+                            Enable-ADAccount -Identity $identity @Cache:ConnectionInfo
+                            Set-UDElement -Id "btnEnabled" -Content {
+                                New-UDIcon -Icon 'xing'
+                                "Disable"
+                            }
+                        }
+                    }
+                }             
             }
         }
+
+
     }
 
     if ($Object.ObjectClass -eq 'user') {
