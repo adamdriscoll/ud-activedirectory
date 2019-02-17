@@ -1,4 +1,4 @@
-New-UDPage -Name "Home" -Icon home -Content {
+New-UDPage -Name "Home" -Icon home -DefaultHomePage -Content {
     New-UDRow -Endpoint {
         New-UDColumn -Size 12 -Content {
             if ($Cache:Loading) {

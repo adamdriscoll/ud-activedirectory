@@ -1,3 +1,7 @@
+﻿Import-Module ActiveDirectory
+Import-Module UniversalDashboard
+
+New-PSDrive –Name AD –PSProvider ActiveDirectory @Cache:ConnectionInfo –Root "//RootDSE/"  -Scope Global
 function New-ADIcon {
     param($ObjectClass, $Size) 
 
