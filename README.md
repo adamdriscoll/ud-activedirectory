@@ -12,6 +12,17 @@ Active Directory Dashboard built on Universal Dashboard.
 - Reset User Passwords
 - Create Users
 
+## Usage
+
+```
+Import-Module ud-activedirectory 
+Start-UDActiveDirectoryDashboard -Server myDomainController -Credential administrator
+```
+
+## Description 
+
+This dashboard reads data from a domain and produces a dashboard that displays basic information about the domain on the home page. From there you can also search the domain, view objects and their attribute and create users. The dashboard features a login page and custom navigation.
+
 ## Home Page Dashboard
 
 ![](./images/dashboard.png)
