@@ -1,23 +1,18 @@
-New-UDPage -Url "/user/create" -Icon Plus -Endpoint {
+New-UDPage -Url "/user/reset-password" -Icon Plus -Endpoint {
     New-UDRow -Columns {
         New-UDColumn -Size 12 -Content {
-            New-UDInput -Title "Create User" -SubmitText "Create" -Content {
-                New-UDInputField -Name "FirstName" -Placeholder "First Name" -Type "textbox"
-                New-UDInputField -Name "LastName" -Placeholder "Last Name" -Type "textbox"
+            New-UDInput -Title "Reset Password" -SubmitText "Reset Password" -Content {
                 New-UDInputField -Name "UserName" -Placeholder "Account Name" -Type "textbox"
                 New-UDInputField -Name "Password" -Placeholder "Password" -Type "password"
             } -Endpoint {
                 param(
-                    $FirstName,
-                    $LastName,
                     $UserName,
                     $Password
                 )
         
                 try 
-                {
-                    New-ADUser -Name $UserName -GivenName $FirstName -Surname $LastName @Cache:ConnectionInfo 
-                    $SecurePassword = ConvertTo-SecureString -AsPlainText -String $Password -Force
+                { 
+                    $SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
                     Set-ADAccountPassword -Reset -NewPassword $SecurePassword -Identity $UserName @Cache:ConnectionInfo
                     New-UDInputAction -RedirectUrl "/object/$UserName"
                 }

@@ -51,4 +51,8 @@ This dashboard reads data from a domain and produces a dashboard that displays b
 
 ![](./images/group-membership.png)
 
+## Show Deleted Objects
+
+![](./images/deleted-objects.png)
+
 _Icon from [Icons8](http://icons8.com)_

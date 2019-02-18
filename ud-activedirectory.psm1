@@ -3,7 +3,9 @@ function Start-UDActiveDirectoryDashboard {
         [Parameter()]
         [string]$Server,
         [Parameter()]
-        [PSCredential]$Credential
+        [PSCredential]$Credential,
+        [Parameter()]
+        [int]$Port = 10001
     )
 
     $Cache:Loading = $true
@@ -48,15 +50,18 @@ function Start-UDActiveDirectoryDashboard {
 
     $Navigation = New-UDSideNav -Content {
         New-UDSideNavItem -Text "Home" -Url "Home" -Icon home
+        New-UDSideNavItem -Text "Deleted Objects" -Url "deleted-objects" -Icon user_times
         New-UDSideNavItem -Text "Explorer" -Url "Explorer" -Icon folder
         New-UDSideNavItem -Text "Search" -Url "Search" -Icon search
         New-UDSideNavItem -Text "User Management" -Icon user  -Children {
+            New-UDSideNavItem -Text "Add User To Group" -Url "user/add-to-group" -Icon user_plus
             New-UDSideNavItem -Text "Create User" -Url "user/create" -Icon plus_circle
+            New-UDSideNavItem -Text "Reset Password" -Url "user/reset-password" -Icon code
         }
     }
 
     $Dashboard = New-UDDashboard -Title "Active Directory" -Pages $Pages -EndpointInitialization $EndpointInit -LoginPage $LoginPage -Navigation $Navigation
     
-    Start-UDDashboard -Dashboard $Dashboard -Endpoint $Endpoints -Port 10001 -AllowHttpForLogin
+    Start-UDDashboard -Dashboard $Dashboard -Endpoint $Endpoints -Port $Port -AllowHttpForLogin
 }
 
