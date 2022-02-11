@@ -2,7 +2,7 @@
 
 Active Directory Dashboard built on Universal Dashboard.
 
-[Marketplace](https://ironmansoftware.com/product/active-directory-dashboard/) 
+[Marketplace](https://marketplace.universaldashboard.io/Dashboard/ud-activedirectory) 
 
 ## Features 
 
